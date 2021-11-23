@@ -1,0 +1,98 @@
+<script>
+	function MyFunction(aggregate){
+		keyword = aggregate.name;
+		console.log("keyword: "+keyword);
+		artists_array = document.getElementsByClassName('search-result row');
+		artists_array = Array.from(artists_array);
+		matching_artists = artists_array.filter(keyword_filter,keyword);
+		len_matching = matching_artists.length;
+		len_original = artists_array.length;
+		section = document.getElementById('artists_section');
+		section.innerHTML = matching_artists.map(e => e.outerHTML).join()
+		console.log(section);
+		header = document.getElementById('results');
+		header.innerHTML = `<h2 class="lead" id="results"><strong class="text-danger">${len_matching}</strong> results out of ${len_original} matches the criteria</h2>`;
+
+		var tags_ul = document.getElementById("tags");
+		var tags_li = document.createElement("li");
+		tags_li.setAttribute("style","display:inline-block; padding:15px; margin:10px; border: 2px solid blue; border-radius: 5px;");
+		tags_li.appendChild(document.createTextNode(keyword));
+		tags_ul.appendChild(tags_li);
+	}
+
+	function keyword_filter(element){
+		keyword = this;
+		content = element.innerText;
+		return content.includes(keyword)
+	}
+
+</script>
+
+<div class="container">
+    <head>
+        <title>Search About Music Artists</title>
+    </head>
+    <style>
+    body{
+        background-image: url('https://www.teahub.io/photos/full/1-12156_music-background-images-hd.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+    </style>
+    <hgroup class="mb20">
+        <h1 style="background-color:powderblue; margin: 40px; font-size: xx-large"><center>Music Artists Search Engine</center></h1>
+        <h3 class="lead" style="font-size: x-large;"><center>Enter the search query</center></strong></h3>
+    </hgroup>
+	<form action="http://127.0.0.1:5000/" method="post" align="center">
+		<input style="width: 200px; height: 30px; border-radius: 5px; font-size: 14px;" type="text" class="searchTerm" name="searchTerm"  placeholder="Search for your preferance">
+    	<input style="width: 58px; height: 30px; border-radius: 5px;" type="submit" value="Search">
+	</form>
+
+	{% if hits %}
+        <head>
+            <title>Search About Music Artists</title>
+        </head>
+    <hgroup class="mb20">
+		<h2><i><u>Search Results</u></i></h2>
+		<h3 class="lead" id="results"><strong class="text-danger">{{ num_results }}</strong> results founded for : <strong class="text-danger">{{  query  }}</strong></h3>
+	</hgroup>
+
+    <section id='song_section' class="col-md-8">
+		{% for hit in hits %}
+		<article class="search-result row">
+			<div class="col-md-12">
+				<h3 style="color:darkblue;">{{ hit._source.artist_name }}</h3>
+				<ul class="meta-search">
+					<li><i class="glyphicon glyphicon-tags"></i> <span>Gender - {{ hit._source.gender }}</span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Birthday - {{ hit._source.birthday }}</span></li>
+					<li><i class="glyphicon glyphicon-tags"></i> <span>Country - {{ hit._source.country }}</span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Songs - {{ hit._source.songs }} </span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Genres of Music - {{ hit._source.genres_of_music }} </span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Awards - {{ hit._source.awards }} </span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Description - {{ hit._source.description }} </span></li>
+                    <li><i class="glyphicon glyphicon-tags"></i> <span>Votes - {{ hit._source.votes }} </span></li>
+				</ul>
+			</div>
+			<div class="col-md-6">
+
+			</div>
+			<span class="clearfix borda"></span>
+		</article>
+		{% endfor %}
+	</section>
+
+	{% else %}
+		{% if init %}
+            <head>
+            <title>Search About Music Artists</title>
+            </head>
+
+
+		{% else %}
+		<hgroup class="mb20">
+			<h2><i><u>Search Results</u></i></h2>
+			<h3 class="lead"><strong class="text-danger">No</strong> results found for : <strong class="text-danger">{{  query  }}</strong></h3>
+		</hgroup>
+		{% endif %}
+	{% endif %}
+</div>
