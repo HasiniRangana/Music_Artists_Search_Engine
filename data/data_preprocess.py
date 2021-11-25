@@ -9,7 +9,7 @@ translator = Translator()
 source_lan = "en"
 translated_to= "si"
 
-data = pd.read_csv('C:/Users/ADF/Desktop/Flask/data/file.csv')
+data = pd.read_csv('./data/file.csv')
 
 data.to_json(path_or_buf='artists.json',orient='records',lines=False)
 
